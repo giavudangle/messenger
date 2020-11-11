@@ -1,14 +1,20 @@
 package com.example.android_chatapp;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import androidx.appcompat.widget.Toolbar;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,10 +29,26 @@ public class RegisterActivity extends AppCompatActivity {
     private TextInputEditText mEmail;
     private TextInputEditText mPassword;
     private Button mCreateBtn;
+
+    private Toolbar mToolbar;
+
+    //ProgressDialog
+    private ProgressDialog mRegProgress;
+
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        //Toolbar set
+        mToolbar = (Toolbar) findViewById(R.id.register_toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("Create Account");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mRegProgress = new ProgressDialog(this);
 
         // Firebase Authentication
         mAuth = FirebaseAuth.getInstance();
@@ -43,14 +65,19 @@ public class RegisterActivity extends AppCompatActivity {
                 String user_name = mUsername.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
                 String email = mEmail.getText().toString().trim();
-                registerNewUser(user_name,email,password);
+
+                if(TextUtils.isEmpty(user_name) || TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
+                    mRegProgress.setTitle("Resgistering User");
+                    mRegProgress.setMessage("Please wait while we create your account");
+                    mRegProgress.setCanceledOnTouchOutside(false);
+                    mRegProgress.show();
+                    registerNewUser(user_name,email,password);
+                }
             }
         });
-
-
-
-
     }
+
+
 
     private void registerNewUser(String user_name, String email, String password) {
         Log.d("Infor",email);
@@ -61,6 +88,7 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            mRegProgress.dismiss();
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("Status", "createUserWithEmail:success");
                             //FirebaseUser user = mAuth.getCurrentUser();
@@ -68,6 +96,7 @@ public class RegisterActivity extends AppCompatActivity {
                             startActivity(mainIntent);
                             finish();
                         } else {
+                            mRegProgress.hide();
                             // If sign in fails, display a message to the user.
                             Log.w("Error", "createUserWithEmail:failure", task.getException());
                             Toast.makeText(RegisterActivity.this, "Authentication failed.",
