@@ -11,7 +11,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -19,6 +21,11 @@ import com.google.firebase.auth.FirebaseUser;
 public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private Toolbar mToolbar;
+
+    private ViewPager mViewPager;
+    private SectionPagerAdapter mSectionPagerAdapter;
+
+    private TabLayout mTabLayout;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +35,16 @@ public class MainActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.main_page_tool_bar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("VK Chat");
+
+        //tabs
+        mViewPager = (ViewPager) findViewById(R.id.main_tabPager);
+        mSectionPagerAdapter = new SectionPagerAdapter(getSupportFragmentManager());
+
+        mViewPager.setAdapter(mSectionPagerAdapter);
+
+        mTabLayout = (TabLayout) findViewById(R.id.main_tabs);
+        mTabLayout.setupWithViewPager(mViewPager);
+
     }
 
 
@@ -58,15 +75,33 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
-        switch (item.getItemId()){
-            case R.id.btn_account_settings_item:
-            case R.id.btn_all_users_item:
-                return true;
-            case R.id.btn_logout_item:
-                FirebaseAuth.getInstance().signOut();
-                navigateToStartActivity();
-            default:
-                return true;
+
+        if(item.getItemId() == R.id.btn_logout_item) {
+            FirebaseAuth.getInstance().signOut();
+            navigateToStartActivity();
         }
+        if(item.getItemId() == R.id.btn_account_settings_item) {
+            Intent settingIntent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(settingIntent);
+        }
+        if(item.getItemId() == R.id.btn_all_users_item) {
+            Intent settingIntent = new Intent(MainActivity.this, UsersActivity.class);
+            startActivity(settingIntent);
+        }
+        return true;
+//        switch (item.getItemId()){
+//            case R.id.btn_account_settings_item:
+//                Intent settingIntent = new Intent(MainActivity.this, SettingsActivity.class);
+//                startActivity(settingIntent);
+//                break;
+//            case R.id.btn_all_users_item:
+//                Intent settingIntent1 = new Intent(MainActivity.this, UsersActivity.class);
+//                startActivity(settingIntent1);
+//                break;
+//            case R.id.btn_logout_item:
+//
+//            default:
+//                return true;
+//        }return true;
     }
 }
