@@ -65,19 +65,20 @@ public class RegisterActivity extends AppCompatActivity {
                 String user_name = mUsername.getText().toString().trim();
                 String password = mPassword.getText().toString().trim();
                 String email = mEmail.getText().toString().trim();
-
-                if(TextUtils.isEmpty(user_name) || TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-                    mRegProgress.setTitle("Resgistering User");
-                    mRegProgress.setMessage("Please wait while we create your account");
-                    mRegProgress.setCanceledOnTouchOutside(false);
-                    mRegProgress.show();
-                    registerNewUser(user_name,email,password);
-                }
+                registerNewUser(user_name,email,password);
+//                if(TextUtils.isEmpty(user_name) || TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
+//                    mRegProgress.setTitle("Resgistering User");
+//                    mRegProgress.setMessage("Please wait while we create your account");
+//                    mRegProgress.setCanceledOnTouchOutside(false);
+//                    mRegProgress.show();
+//
+//                }
             }
         });
     }
 
 
+    //video part 9
 
     private void registerNewUser(String user_name, String email, String password) {
         Log.d("Infor",email);
