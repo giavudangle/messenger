@@ -84,7 +84,7 @@ public class SettingsActivity extends AppCompatActivity {
                 String name = snapshot.child("name").getValue().toString();
                 String image = snapshot.child("image").getValue().toString();
                 String status = snapshot.child("status").getValue().toString();
-                String tumb_image = snapshot.child("thumb_image").getValue().toString();
+                String thumb_image = snapshot.child("thumb_image").getValue().toString();
 
                 mName.setText(name);
                 mStatus.setText(status);
@@ -117,9 +117,6 @@ public class SettingsActivity extends AppCompatActivity {
 
                 startActivityForResult(Intent.createChooser(galleryIntent, "SELECT IMAGE"), GALLERY_PICK);
 
-                CropImage.activity()
-                        .setGuidelines(CropImageView.Guidelines.ON)
-                        .start(SettingsActivity.this);
             }
         });
 
@@ -139,10 +136,11 @@ public class SettingsActivity extends AppCompatActivity {
 
 
         }
+
 //        Ở đây nè Vũ Đặng video 12, 13
         if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if(requestCode == RESULT_OK) {
+            if(resultCode == RESULT_OK) {
 
                 mProgressDialog = new ProgressDialog(SettingsActivity.this);
                 mProgressDialog.setTitle("Uploading Image...");
@@ -153,20 +151,21 @@ public class SettingsActivity extends AppCompatActivity {
                 Uri resultUri = result.getUri();
                 String current_user_id = mCurrentUser.getUid();
 
-                StorageReference filePath = mImageStorage.child("profile_images").child(current_user_id + "jpg");
+                StorageReference filePath = mImageStorage.child("profile_images").child(current_user_id + ".jpg");
                 filePath.putFile(resultUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                          if(task.isSuccessful()) {
                             Toast.makeText(SettingsActivity.this, "Working", Toast.LENGTH_SHORT).show();
+                            mProgressDialog.dismiss();
 
                         } else {
                             Toast.makeText(SettingsActivity.this, "Error", Toast.LENGTH_SHORT).show();
-//                            mProgressDialog.dismiss();
+                            mProgressDialog.dismiss();
                         }
                     }
                 });
-            } else if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+            } else if(resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
         }
