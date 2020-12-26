@@ -100,12 +100,14 @@ public class FriendsFragment extends Fragment {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         String userName = snapshot.child("name").getValue().toString();
                         String user_Thumb = snapshot.child("thumb_image").getValue().toString();
-                        String userOnline = snapshot.child("online").getValue().toString();
 
+                        if(snapshot.hasChild("online")){
+                            String userOnline = snapshot.child("online").getValue().toString();
+                            holder.setUserOnline(userOnline);
+                        }
 
                         holder.setName(userName);
                         holder.setUserImage(user_Thumb,getContext());
-                        holder.setUserOnline(userOnline);
                     }
 
                     @Override
