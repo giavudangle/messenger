@@ -6,14 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".UsersActivity">
 
-    <include layout="@layout/app_bar_layout" android:id="@+id/users_appBar"/>
-
+    <include layout="@layout/app_bar_layout" android:id="@+id/users_appbar"/>
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/users_list"
         android:layout_width="match_parent"
-        android:layout_height="675dp"
-        android:layout_below="@+id/users_appBar"
-        android:layout_marginTop="0dp">
+        android:layout_below="@+id/users_appbar"
+        android:id="@+id/users_listUsers"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_height="match_parent">
 
     </androidx.recyclerview.widget.RecyclerView>
+
 </RelativeLayout>

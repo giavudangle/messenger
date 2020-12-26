@@ -2,33 +2,37 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/user_single_image"
+        android:id="@+id/users_single_avatar"
         android:layout_width="64dp"
         android:layout_height="64dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/avatar" />
+
+    <TextView
+        android:id="@+id/users_single_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-        tools:src="@drawable/avatar" />
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/users_single_avatar"
+        android:text="Display Name"
+        android:textSize="18dp"
+        android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/user_single_name"
+        android:id="@+id/users_single_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="90dp"
-        android:layout_marginTop="15dp"
-        android:text="Dispaly Name"
-        android:textColor="@android:color/black"
-        android:textSize="18sp" />
+        android:layout_below="@id/users_single_name"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/users_single_avatar"
+        android:text="User Status"
+        android:textSize="13dp" />
 
-    <TextView
-        android:id="@+id/user_single_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="90dp"
-        android:layout_marginTop="45dp"
-        android:text="User default status" />
 
 </RelativeLayout>
