@@ -63,11 +63,16 @@ public class UsersActivity extends AppCompatActivity {
                 holder.setName(users.getName());
                 holder.setStatus(users.getStatus());
                 holder.setImage(users.getImage());
-                Log.d("TAG", "--------------");
-                Log.d("TAG", "users.getName() : " + users.getName());
-                Log.d("TAG", "users.getStatus() : " + users.getStatus());
-                Log.d("TAG", "users.getThumb_image() : " + users.getImage());
                 final String selected_user_id = getRef(position).getKey();
+                holder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent profileIntent = new Intent(UsersActivity.this,ProfileActivity.class);
+                        profileIntent.putExtra("user_id",selected_user_id);
+                        startActivity(profileIntent);
+                    }
+                });
+
 
 
 

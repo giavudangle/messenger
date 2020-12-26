@@ -51,6 +51,10 @@ dependencies {
     // Compress image
     implementation 'id.zelory:compressor:2.0.0'
 
+    //http
+    implementation 'com.squareup.okhttp:okhttp:2.5.0'
+
+
 
 
 

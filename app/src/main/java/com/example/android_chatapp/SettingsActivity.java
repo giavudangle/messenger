@@ -27,6 +27,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -75,7 +77,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         mImageStorage = FirebaseStorage.getInstance().getReference();
 
-        // Get current user from Firebase throught FirebaseAuth.getInstance
+        // Get current user from Firebase through FirebaseAuth.getInstance
         mCurrentUser = FirebaseAuth.getInstance().getCurrentUser();
         // Get uid from user instance
         String current_uid = mCurrentUser.getUid();
@@ -83,7 +85,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         // Get child Users with current UID
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(current_uid);
-
+        mUserDatabase.keepSynced(true);
 
         // Data from server
         mUserDatabase.addValueEventListener(new ValueEventListener() {
@@ -91,13 +93,29 @@ public class SettingsActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 //Toast.makeText(SettingsActivity.this,snapshot.toString(),Toast.LENGTH_LONG).show();
                 String name = snapshot.child("name").getValue().toString();
-                String image = snapshot.child("image").getValue().toString();
+                final String image = snapshot.child("image").getValue().toString();
                 String status = snapshot.child("status").getValue().toString();
                 String thumb_image = snapshot.child("thumb_image").getValue().toString();
 
                 mName.setText(name);
                 mStatus.setText(status);
-                Picasso.get().load(image).into(mDisplayImage);
+
+                if(!image.equals("default")){
+                    Picasso.get().load(image).networkPolicy(NetworkPolicy.OFFLINE)
+                            .placeholder(R.drawable.avatar).into(mDisplayImage, new Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Picasso.get().load(image).placeholder(R.drawable.avatar).into(mDisplayImage);
+                        }
+                    });
+                }
+
+
             }
 
             @Override
