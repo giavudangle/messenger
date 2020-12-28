@@ -1,4 +1,4 @@
-package com.example.android_chatapp;
+package com.example.android_chatapp.utils;
 
 import android.app.Application;
 

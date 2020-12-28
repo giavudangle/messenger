@@ -1,4 +1,4 @@
-package com.example.android_chatapp;
+package com.example.android_chatapp.models;
 
 public class Friends {
     public String date;

@@ -1,9 +1,13 @@
-package com.example.android_chatapp;
+package com.example.android_chatapp.adapters;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+
+import com.example.android_chatapp.fragments.ChatsFragment;
+import com.example.android_chatapp.fragments.FriendsFragment;
+import com.example.android_chatapp.fragments.RequestsFragment;
 
 public class SectionPagerAdapter extends FragmentPagerAdapter {
 

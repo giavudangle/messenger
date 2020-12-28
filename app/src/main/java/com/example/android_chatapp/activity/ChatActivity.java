@@ -1,4 +1,4 @@
-package com.example.android_chatapp;
+package com.example.android_chatapp.activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -22,6 +22,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 
+import com.example.android_chatapp.adapters.MessageAdapter;
+import com.example.android_chatapp.models.Messages;
+import com.example.android_chatapp.R;
+import com.example.android_chatapp.utils.GetTimeAgo;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;

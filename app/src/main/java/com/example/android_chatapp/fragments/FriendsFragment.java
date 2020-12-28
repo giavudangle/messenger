@@ -1,4 +1,4 @@
-package com.example.android_chatapp;
+package com.example.android_chatapp.fragments;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -16,8 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.android_chatapp.R;
+import com.example.android_chatapp.activity.ChatActivity;
+import com.example.android_chatapp.activity.ProfileActivity;
+import com.example.android_chatapp.models.Friends;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;

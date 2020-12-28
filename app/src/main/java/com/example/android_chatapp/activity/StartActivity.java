@@ -1,4 +1,4 @@
-package com.example.android_chatapp;
+package com.example.android_chatapp.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,6 +7,8 @@ import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.android_chatapp.R;
 
 public class StartActivity extends AppCompatActivity {
     private Button mRegBtn;
