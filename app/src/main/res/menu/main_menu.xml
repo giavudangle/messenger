@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/btn_account_settings_item"
-        android:title="Account Settings" />
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/btn_all_users_item"
-        android:title="All Users" />
+        android:icon="@drawable/icons8_search"
+        android:title="All Users"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/btn_account_settings_item"
+        android:icon="@drawable/icon_settings"
+        android:title="Account Settings"
+        app:showAsAction="always" />
+
     <item
         android:id="@+id/btn_logout_item"
+        app:showAsAction="always"
+        android:icon="@drawable/icons8_logout"
         android:title="Log out" />
 </menu>

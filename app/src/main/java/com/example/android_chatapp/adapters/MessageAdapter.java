@@ -17,6 +17,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -24,6 +26,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder>{
     private List<Messages> mMessageList;
     private DatabaseReference mUserDatabase;
+    private DatabaseReference mMessageDatabase;
 
     public MessageAdapter(List<Messages> mMessageList) {
 
@@ -91,18 +94,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         });
 
         if(message_type.equals("text")) {
-
             viewHolder.messageText.setText(c.getMessage());
             viewHolder.messageImage.setVisibility(View.INVISIBLE);
-
-
         } else {
-
             viewHolder.messageText.setVisibility(View.INVISIBLE);
-            Picasso.get().load(c.getMessage())
-                    .placeholder(R.drawable.avatar).into(viewHolder.messageImage);
-
+            Picasso.get().load(c.getMessage()).into(viewHolder.messageImage);
         }
+
 
     }
 

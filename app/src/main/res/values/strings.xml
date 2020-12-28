@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">VK Chat App</string>
+    <string name="app_name">VK Messenger</string>
     <string name="username">Username</string>
     <string name="email">Email</string>
     <string name="password">Password</string>

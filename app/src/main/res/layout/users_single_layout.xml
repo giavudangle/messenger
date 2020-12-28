@@ -43,7 +43,7 @@
         android:layout_marginTop="10dp"
         android:layout_toRightOf="@+id/users_single_name"
         android:visibility="invisible"
-        app:srcCompat="@drawable/online_icon" />
+        app:srcCompat="@drawable/online" />
 
 
 </RelativeLayout>
