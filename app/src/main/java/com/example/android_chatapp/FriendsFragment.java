@@ -1,6 +1,9 @@
 package com.example.android_chatapp;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -93,12 +96,12 @@ public class FriendsFragment extends Fragment {
             protected void onBindViewHolder(@NonNull final FriendsViewHolder holder, int i, @NonNull Friends friends) {
                 holder.setDate(friends.getDate());
 
-                String list_user_id = getRef(i).getKey();
+                final String list_user_id = getRef(i).getKey();
 
                 mUserDatabase.child(list_user_id).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String userName = snapshot.child("name").getValue().toString();
+                        final String userName = snapshot.child("name").getValue().toString();
                         String user_Thumb = snapshot.child("thumb_image").getValue().toString();
 
                         if(snapshot.hasChild("online")){
@@ -108,6 +111,34 @@ public class FriendsFragment extends Fragment {
 
                         holder.setName(userName);
                         holder.setUserImage(user_Thumb,getContext());
+
+                        holder.mView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                CharSequence option[] = new CharSequence[]{"Open Profile", "Send message"};
+                                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+                                builder.setTitle("Select Options");
+                                builder.setItems(option, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int i) {
+                                        if(i == 0) {
+                                            Intent profileIntent = new Intent(getContext(), ProfileActivity.class);
+                                            profileIntent.putExtra("user_id", list_user_id);
+                                            startActivity(profileIntent);
+                                        }
+
+                                        if(i == 1) {
+                                            Intent chatIntent = new Intent(getContext(), ChatActivity.class);
+                                            chatIntent.putExtra("user_id", list_user_id);
+                                            chatIntent.putExtra("user_name", userName);
+                                            startActivity(chatIntent);
+                                        }
+                                    }
+                                });
+                                builder.show();
+                            }
+                        });
                     }
 
                     @Override

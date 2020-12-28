@@ -16,6 +16,8 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private SectionPagerAdapter mSectionPagerAdapter;
 
     private TabLayout mTabLayout;
+    private DatabaseReference mUserRef;
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +38,9 @@ public class MainActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.main_page_tool_bar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("VK Chat");
-
+        if(mAuth.getCurrentUser() != null) {
+            mUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
+        }
         //tabs
         mViewPager = (ViewPager) findViewById(R.id.main_tabPager);
         mSectionPagerAdapter = new SectionPagerAdapter(getSupportFragmentManager());
@@ -55,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null){
           navigateToStartActivity();
+        } else {
+            mUserRef.child("online").setValue("true");
         }
 
     }
@@ -89,19 +96,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(settingIntent);
         }
         return true;
-//        switch (item.getItemId()){
-//            case R.id.btn_account_settings_item:
-//                Intent settingIntent = new Intent(MainActivity.this, SettingsActivity.class);
-//                startActivity(settingIntent);
-//                break;
-//            case R.id.btn_all_users_item:
-//                Intent settingIntent1 = new Intent(MainActivity.this, UsersActivity.class);
-//                startActivity(settingIntent1);
-//                break;
-//            case R.id.btn_logout_item:
-//
-//            default:
-//                return true;
-//        }return true;
+
     }
 }
