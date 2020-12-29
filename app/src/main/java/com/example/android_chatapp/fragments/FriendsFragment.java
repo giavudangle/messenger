@@ -153,6 +153,7 @@ public class FriendsFragment extends Fragment {
         };
 
         mFriendList.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
         adapter.startListening();
     }
 

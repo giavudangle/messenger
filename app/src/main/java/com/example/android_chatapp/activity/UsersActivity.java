@@ -117,7 +117,10 @@ public class UsersActivity extends AppCompatActivity {
         public void setImage(String url_avatar){
             CircleImageView userAvatarView = mView.findViewById(R.id.users_single_avatar);
 //                if user hadn't set avatar display default avatar
-            if(!url_avatar.equals("default")){
+            if(url_avatar.equals(null)){
+                Picasso.get().load(R.drawable.avatar).into(userAvatarView);
+            }
+            if(!url_avatar.equals("default") ){
                 Picasso.get().load(url_avatar).placeholder(R.drawable.avatar).into(userAvatarView);
             }
         }

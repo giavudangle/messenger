@@ -2,6 +2,7 @@ package com.example.android_chatapp.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.View;
@@ -96,9 +97,9 @@ public class ProfileActivity extends AppCompatActivity {
                 mProfileName.setText(display_name);
                 mProfileStatus.setText(status);
 
-                Picasso.get().load(image).into(mProfileImage);
+                Picasso.get().load(image).placeholder(R.drawable.avatar).into(mProfileImage);
 
-                // check self
+                // check self ^^
                 if (mCurrent_user.getUid().equals(user_id)) {
 
                     mDeclineBtn.setEnabled(false);
@@ -112,25 +113,19 @@ public class ProfileActivity extends AppCompatActivity {
 
                 //--------------- FRIENDS LIST / REQUEST FEATURE -----
                 mFriendReqDatabase.child(mCurrent_user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @SuppressLint("ResourceAsColor")
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-
                         if (dataSnapshot.hasChild(user_id)) {
                             String req_type = dataSnapshot.child(user_id).child("request_type").getValue().toString();
                             if (req_type.equals("received")) {
-
                                 mCurrent_state = "req_received";
                                 mProfileSendReqBtn.setText("Accept Friend Request");
-
                                 mDeclineBtn.setVisibility(View.VISIBLE);
                                 mDeclineBtn.setEnabled(true);
-
-
                             } else if (req_type.equals("sent")) {
-
                                 mCurrent_state = "req_sent";
                                 mProfileSendReqBtn.setText("Cancel Friend Request");
-
                                 mDeclineBtn.setVisibility(View.INVISIBLE);
                                 mDeclineBtn.setEnabled(false);
 
@@ -140,15 +135,11 @@ public class ProfileActivity extends AppCompatActivity {
                             mFriendDatabase.child(mCurrent_user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-
                                     if (dataSnapshot.hasChild(user_id)) {
-
                                         mCurrent_state = "friends";
                                         mProfileSendReqBtn.setText("Unfriend this Person");
-
                                         mDeclineBtn.setVisibility(View.INVISIBLE);
                                         mDeclineBtn.setEnabled(false);
-
                                     }
                                     mProgressDialog.dismiss();
 
@@ -156,9 +147,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
-
                                     mProgressDialog.dismiss();
-
                                 }
                             });
 
@@ -166,7 +155,6 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
                     }
                 });
             }
@@ -195,40 +183,39 @@ public class ProfileActivity extends AppCompatActivity {
                     notificationData.put("type", "request");
 
                     Map requestMap = new HashMap();
+                    // Add 2 flags
+                    // Example : When current user id is Vudang and Friends Request from Hykhang
+                    // => Vudang received request - Hykhang sent request
+                    // Push value to table : Friend_req(table)/Vudang/HyKhang/request_Type/sent
+                    // Push value to table : Friend_req(table)/HyKhang/Vudang/request_Type/received
+
+                    // Current user -> getUser from firebase ( current login chat )
+                    // user_id -> getIntent when click item on recycler view
+
                     requestMap.put("Friend_req/" + mCurrent_user.getUid() + "/" + user_id + "/request_type", "sent");
                     requestMap.put("Friend_req/" + user_id + "/" + mCurrent_user.getUid() + "/request_type", "received");
                     requestMap.put("notifications/" + user_id + "/" + newNotificationId, notificationData);
 
                     mRootRef.updateChildren(requestMap, new DatabaseReference.CompletionListener() {
+                        @SuppressLint("ResourceAsColor")
                         @Override
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-
                             if (databaseError != null) {
-
                                 Toast.makeText(ProfileActivity.this, "There was some error in sending request", Toast.LENGTH_SHORT).show();
-
                             } else {
-
                                 mCurrent_state = "req_sent";
                                 mProfileSendReqBtn.setText("Cancel Friend Request");
-
                             }
-
                             mProfileSendReqBtn.setEnabled(true);
-
-
                         }
                     });
-
                 }
-
 
                 // - -------------- CANCEL REQUEST STATE ------------
                 if (mCurrent_state.equals("req_sent")) {
                     mFriendReqDatabase.child(mCurrent_user.getUid()).child(user_id).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-
                             mFriendReqDatabase.child(user_id).child(mCurrent_user.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
@@ -249,7 +236,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                 }
 
-                // ------------ REQ RECEIVED STATE ----------
+                // ------------ RECEIVED REQUEST  STATE ----------
 
                 if (mCurrent_state.equals("req_received")) {
 

@@ -6,4 +6,6 @@
     <color name="bgGray">#4f4e4e</color>
     <color name="white">#fff</color>
     <color name="green">#40e014</color>
+    <color name="green_medium">#68d14d</color>
+    <color name="pink_light">#ff4a4a</color>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.android_chatapp.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,9 +18,12 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 
@@ -55,6 +59,7 @@ public class ChatActivity extends AppCompatActivity {
     private String mChatUser;
     private Toolbar mChatToolbar;
 
+    Context mContext;
 
     private ProgressDialog mProgressDialog;
 
@@ -110,6 +115,8 @@ public class ChatActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowCustomEnabled(true);
 
+        mContext = getApplicationContext();
+
 
         mRootRef = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
@@ -134,7 +141,7 @@ public class ChatActivity extends AppCompatActivity {
         mChatSendBtn = (ImageButton) findViewById(R.id.chat_send_btn);
         mChatMessageView = (EditText) findViewById(R.id.chat_message_view);
 
-        mAdapter = new MessageAdapter(messagesList);
+        mAdapter = new MessageAdapter(mContext,messagesList);
 
         mMessagesList = (RecyclerView) findViewById(R.id.messages_list);
         mRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.message_swipe_layout);
@@ -236,6 +243,8 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 sendMessage();
+                mAdapter.notifyDataSetChanged();
+
             }
         });
 
@@ -243,17 +252,32 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent galleryIntent = new Intent();
-                galleryIntent.setType("image/*");
-                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                PopupMenu popup = new PopupMenu(ChatActivity.this,view);
+                popup.inflate(R.menu.send_popup_menu);
+
+                Menu menu = popup.getMenu();
 
 
-                startActivityForResult(Intent.createChooser(galleryIntent, "SELECT IMAGE"), GALLERY_PICK);
-                mProgressDialog = new ProgressDialog(ChatActivity.this);
-                mProgressDialog.setTitle("Sending Image...");
-                mProgressDialog.setMessage("Please wait while we upload and process the image.");
-                mProgressDialog.setCanceledOnTouchOutside(false);
-                mProgressDialog.show();
+
+                // Register Menu Item Click event.
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        switch (menuItem.getItemId()){
+                            case R.id.menuItem_image:
+                                Intent galleryIntent = new Intent();
+                                galleryIntent.setType("image/*");
+                                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+                                startActivityForResult(Intent.createChooser(galleryIntent, "SELECT IMAGE"), GALLERY_PICK);
+                                break;
+                        }
+                        return true;
+                    }
+                });
+
+                // Show the PopupMenu.
+                popup.show();
+
 
             }
         });
@@ -277,6 +301,12 @@ public class ChatActivity extends AppCompatActivity {
 
             Uri imageUri = data.getData();
 
+            mProgressDialog = new ProgressDialog(ChatActivity.this);
+            mProgressDialog.setTitle("Sending Image...");
+            mProgressDialog.setMessage("Please wait while we upload and process the image.");
+            mProgressDialog.setCanceledOnTouchOutside(false);
+            mProgressDialog.show();
+
             final String current_user_ref = "messages/" + mCurrentUserId + "/" + mChatUser;
             final String chat_user_ref = "messages/" + mChatUser + "/" + mCurrentUserId;
 
@@ -285,15 +315,12 @@ public class ChatActivity extends AppCompatActivity {
 
             final String push_id = user_message_push.getKey();
 
-
             final StorageReference filepath = mImageStorage.child("message_images").child( push_id + ".jpg");
+
 
             filepath.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-
-
-
                     if(task.isSuccessful()){
                         filepath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
@@ -320,24 +347,26 @@ public class ChatActivity extends AppCompatActivity {
                                         }
                                     }
                                 });
+                                mProgressDialog.dismiss();
 
-
+                                mAdapter.notifyDataSetChanged();
                             }
                         });
+
                     }
 
                 }
             });
-            mAdapter.notifyDataSetChanged();
-            mProgressDialog.dismiss();
+
+
 
         }
+
     }
 
     private void loadMoreMessages() {
 
         DatabaseReference messageRef = mRootRef.child("messages").child(mCurrentUserId).child(mChatUser);
-        mRootRef.keepSynced(true);
         Query messageQuery = messageRef.orderByKey().endAt(mLastKey).limitToLast(10);
 
         messageQuery.addChildEventListener(new ChildEventListener() {
@@ -349,28 +378,18 @@ public class ChatActivity extends AppCompatActivity {
                 String messageKey = dataSnapshot.getKey();
 
                 if(!mPrevKey.equals(messageKey)){
-
                     messagesList.add(itemPos++, message);
-
                 } else {
-
                     mPrevKey = mLastKey;
-
                 }
-
 
                 if(itemPos == 1) {
                     mLastKey = messageKey;
                 }
 
-
                 mAdapter.notifyDataSetChanged();
                 mLinearLayout.scrollToPositionWithOffset(10, 0);
-
-
                 mRefreshLayout.setRefreshing(false);
-
-
             }
 
             @Override
@@ -407,15 +426,14 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
+                // Here
                 Messages message = dataSnapshot.getValue(Messages.class);
 
                 messagesList.add(message);
                 itemPos++;
 
                 if(itemPos == 1){
-
                     String messageKey = dataSnapshot.getKey();
-
                     mLastKey = messageKey;
                     mPrevKey = messageKey;
 
@@ -423,7 +441,9 @@ public class ChatActivity extends AppCompatActivity {
 
                 mAdapter.notifyDataSetChanged();
 
-                mMessagesList.scrollToPosition(messagesList.size() - 1);
+                mMessagesList.scrollToPosition(messagesList.size() -1);
+
+
 
 
             }
@@ -445,6 +465,19 @@ public class ChatActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        messageQuery.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                mAdapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
@@ -495,6 +528,11 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 }
             });
+
+
+
         }
+
+
     }
 }

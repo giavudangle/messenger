@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    android:layout_marginTop="3dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/request_fragment_image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="20dp"
+        android:src="@drawable/avatar"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="20dp" />
+
+    <TextView
+        android:id="@+id/request_fragment_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/request_fragment_image"
+        android:layout_toEndOf="@+id/request_fragment_image"
+        android:text="@string/display_name"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:layout_toRightOf="@+id/request_fragment_image" />
+
+    <TextView
+        android:id="@+id/request_fragment_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/request_fragment_name"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="20dp"
+        android:layout_toEndOf="@+id/request_fragment_image"
+        android:text="@string/default_status"
+        android:layout_marginRight="20dp"
+        android:layout_toRightOf="@+id/request_fragment_image" />
+    <Button
+        android:id="@+id/request_fragment_button_accept"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/request_fragment_status"
+        android:layout_toEndOf="@id/request_fragment_image"
+        android:backgroundTint="@color/green_medium"
+        android:text="Accept"
+        android:textSize="12sp"
+        android:textColor="@android:color/white"
+        android:layout_toRightOf="@id/request_fragment_image" />
+    <Button
+        android:id="@+id/request_fragment_button_decline"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:backgroundTint="@color/pink_light"
+        android:layout_below="@id/request_fragment_status"
+        android:layout_toEndOf="@id/request_fragment_button_accept"
+        android:text="Reject"
+        android:textSize="12sp"
+        android:textColor="@android:color/white"
+        android:layout_toRightOf="@id/request_fragment_button_accept" />
+</RelativeLayout>

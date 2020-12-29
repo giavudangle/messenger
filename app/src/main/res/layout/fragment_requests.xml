@@ -5,12 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".fragments.RequestsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:gravity="center"
-
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/request_fragment_recycler_view_accept"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/welcome_to_request_fragment" />
+         />
 
 </FrameLayout>

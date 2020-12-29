@@ -9,4 +9,7 @@
     <string name="welcome_to_request_fragment">Welcome to request fragment</string>
     <string name="welcome_to_chat_fragment">Welcome to chat fragment</string>
     <string name="default_status">Hi there, I\'m using VK Chat App</string>
+    <string name="display_name">Display name</string>
+
+
 </resources>
