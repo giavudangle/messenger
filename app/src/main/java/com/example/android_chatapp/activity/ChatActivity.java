@@ -1,7 +1,6 @@
 package com.example.android_chatapp.activity;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -56,6 +55,10 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ChatActivity extends AppCompatActivity {
+
+    DatabaseReference messReferences ;
+    ValueEventListener seenListener;
+
     private String mChatUser;
     private Toolbar mChatToolbar;
 
@@ -90,6 +93,9 @@ public class ChatActivity extends AppCompatActivity {
 
     // Storage Firebase
     private StorageReference mImageStorage;
+
+
+    final int REQUEST_CODE_WORD = 901;
 
 
     //New Solution
@@ -155,10 +161,10 @@ public class ChatActivity extends AppCompatActivity {
         //------- IMAGE STORAGE ---------
         mImageStorage = FirebaseStorage.getInstance().getReference();
 
-        mRootRef.child("Chat").child(mCurrentUserId).child(mChatUser).child("seen").setValue(true);
+        mRootRef.child("Chat").child(mCurrentUserId).child(mChatUser).child("seen").setValue(false);
 
         loadMessages();
-
+        seenMessage();
 
         mTitleView.setText(userName);
         Picasso.get().load(userImage).into(mProfileImage);
@@ -248,6 +254,7 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+
         mChatAddBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -270,6 +277,12 @@ public class ChatActivity extends AppCompatActivity {
                                 galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
                                 startActivityForResult(Intent.createChooser(galleryIntent, "SELECT IMAGE"), GALLERY_PICK);
                                 break;
+
+                            case R.id.menuItem_Word_file:
+                                Intent wordIntent = new Intent();
+                                wordIntent.setType("application/msword");
+                                wordIntent.setAction(Intent.ACTION_GET_CONTENT);
+                                startActivityForResult(Intent.createChooser(wordIntent,"SELECT WORD FILE"),REQUEST_CODE_WORD);
                         }
                         return true;
                     }
@@ -290,13 +303,18 @@ public class ChatActivity extends AppCompatActivity {
                 loadMoreMessages();
             }
         });
+
     }
+
+
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+
+        // Image Activity Result
         if(requestCode == GALLERY_PICK && resultCode == RESULT_OK){
 
             Uri imageUri = data.getData();
@@ -316,6 +334,8 @@ public class ChatActivity extends AppCompatActivity {
             final String push_id = user_message_push.getKey();
 
             final StorageReference filepath = mImageStorage.child("message_images").child( push_id + ".jpg");
+            final StorageReference wordFilePath = mImageStorage.child("message_files").child( push_id + ".doc");
+
 
 
             filepath.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
@@ -333,6 +353,7 @@ public class ChatActivity extends AppCompatActivity {
                                 messageMap.put("type", "image");
                                 messageMap.put("time", ServerValue.TIMESTAMP);
                                 messageMap.put("from", mCurrentUserId);
+                                messageMap.put("to", mChatUser);
 
                                 Map messageUserMap = new HashMap();
                                 messageUserMap.put(current_user_ref + "/" + push_id, messageMap);
@@ -357,9 +378,68 @@ public class ChatActivity extends AppCompatActivity {
 
                 }
             });
+        }
+
+        // Word Activity Result
+
+        if(requestCode == REQUEST_CODE_WORD && resultCode == RESULT_OK ){
+            Uri wordFileUri = data.getData();
+
+            mProgressDialog = new ProgressDialog(ChatActivity.this);
+            mProgressDialog.setTitle("Sending FILE...");
+            mProgressDialog.setMessage("Please wait while we upload and process the FILE.");
+            mProgressDialog.setCanceledOnTouchOutside(false);
+            mProgressDialog.show();
+
+            DatabaseReference user_message_push = mRootRef.child("messages")
+                    .child(mCurrentUserId).child(mChatUser).push();
 
 
+            final String push_id = user_message_push.getKey();
 
+            final StorageReference wordFilePath = mImageStorage.child("message_files").child( push_id + ".doc");
+
+            final String current_user_ref = "messages/" + mCurrentUserId + "/" + mChatUser;
+            final String chat_user_ref = "messages/" + mChatUser + "/" + mCurrentUserId;
+
+            wordFilePath.putFile(wordFileUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                    if(task.isSuccessful()){
+                        wordFilePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                String download_url = uri.toString();
+
+                                Map messageMap = new HashMap();
+                                messageMap.put("message", download_url);
+                                messageMap.put("seen", false);
+                                messageMap.put("type", "word");
+                                messageMap.put("time", ServerValue.TIMESTAMP);
+                                messageMap.put("from", mCurrentUserId);
+
+                                Map messageUserMap = new HashMap();
+                                messageUserMap.put(current_user_ref + "/" + push_id, messageMap);
+                                messageUserMap.put(chat_user_ref + "/" + push_id, messageMap);
+
+                                mChatMessageView.setText("");
+                                mRootRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                        if(databaseError != null){
+                                            Log.d("CHAT_LOG", databaseError.getMessage().toString());
+                                        }
+                                    }
+                                });
+                                mProgressDialog.dismiss();
+                                mAdapter.notifyDataSetChanged();
+                            }
+                        });
+
+                    }
+
+                }
+            });
         }
 
     }
@@ -485,8 +565,6 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendMessage() {
-
-
         String message = mChatMessageView.getText().toString();
 
         if(!TextUtils.isEmpty(message)){
@@ -505,6 +583,8 @@ public class ChatActivity extends AppCompatActivity {
             messageMap.put("type", "text");
             messageMap.put("time", ServerValue.TIMESTAMP);
             messageMap.put("from", mCurrentUserId);
+            messageMap.put("to", mChatUser);
+
 
 
             Map messageUserMap = new HashMap();
@@ -524,15 +604,52 @@ public class ChatActivity extends AppCompatActivity {
                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                     if(databaseError != null){
                         Log.d("CHAT_LOG", databaseError.getMessage().toString());
-
                     }
                 }
             });
-
-
-
         }
-
-
     }
+
+
+    // Add seen features
+
+    private void seenMessage(){
+        // mCurrentUser -> current User
+        // mChatUSer -> User click from intent
+
+        messReferences = FirebaseDatabase.getInstance().getReference().child("messages");
+        seenListener = messReferences.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.hasChild(mCurrentUserId)){
+                    for(DataSnapshot snapshot : dataSnapshot.child(mCurrentUserId).child(mChatUser).getChildren()){
+                        Messages mess = snapshot.getValue(Messages.class);
+                        if(mess.getFrom().equals(mCurrentUserId)){
+                            HashMap<String,Object> hashMap = new HashMap<>();
+                            hashMap.put("seen",true);
+                            snapshot.getRef().updateChildren(hashMap);
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        messReferences.removeEventListener(seenListener);
+    }
+
+
+
+
+
 }

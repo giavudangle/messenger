@@ -6,12 +6,12 @@
         android:icon="@drawable/icons8_image"
         app:showAsAction="always"
         android:title="Image" />
+
     <item
         app:showAsAction="always"
-
-        android:id="@+id/menuItem_file"
+        android:id="@+id/menuItem_Word_file"
         android:icon="@drawable/icons8_file"
-        android:title="File" />
+        android:title="Word File" />
 
 
 </menu>

@@ -6,10 +6,9 @@ public class Messages {
     private boolean seen;
 
     private String from;
+    private String to;
 
-    public Messages(String from) {
-        this.from = from;
-    }
+
 
     public String getFrom() {
         return from;
@@ -19,11 +18,13 @@ public class Messages {
         this.from = from;
     }
 
-    public Messages(String message, String type, long time, boolean seen) {
+    public Messages(String message, String type, long time, boolean seen,String from,String to) {
         this.message = message;
         this.type = type;
         this.time = time;
         this.seen = seen;
+        this.from = from;
+        this.to=to;
     }
 
     public String getMessage() {
@@ -60,5 +61,13 @@ public class Messages {
 
     public Messages(){
 
+    }
+
+    public String getTo() {
+        return to;
+    }
+
+    public void setTo(String to) {
+        this.to = to;
     }
 }

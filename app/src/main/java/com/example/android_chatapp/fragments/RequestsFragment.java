@@ -151,6 +151,26 @@ public class RequestsFragment extends Fragment {
 
                                 }
                             });
+
+                            mBtnDecline.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    Map friendsMap = new HashMap();
+
+                                    friendsMap.put("Friend_req/" + mCurrentUser + "/" + uid, null);
+                                    friendsMap.put("Friend_req/" + uid + "/" + mCurrentUser, null);
+
+
+                                    mRootRef.updateChildren(friendsMap, new DatabaseReference.CompletionListener() {
+                                        @Override
+                                        public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                                            if(error == null){
+                                                Toast.makeText(getContext(), "OK", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                                }
+                            });
                         }
                     });
                 }
