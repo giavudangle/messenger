@@ -106,8 +106,8 @@ public class RequestsFragment extends Fragment {
             @Override
             protected void onBindViewHolder(@NonNull final AcceptViewHolder holder, int position, @NonNull Accept model) {
                 final String uid = getRef(position).getKey().toString();
-                String request_type = model.getRequest_type();
 
+                String request_type = model.getRequest_type();
                 if (!request_type.equals("sent")) {
                     userDatabase.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -132,6 +132,7 @@ public class RequestsFragment extends Fragment {
                             Button mBtnAccept = view.findViewById(R.id.request_fragment_button_accept);
                             Button mBtnDecline = view.findViewById(R.id.request_fragment_button_decline);
 
+
                             mBtnAccept.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -139,6 +140,7 @@ public class RequestsFragment extends Fragment {
                                     Map friendsMap = new HashMap();
                                     friendsMap.put("Friends/" + mCurrentUser + "/" + uid + "/date", currentDate);
                                     friendsMap.put("Friends/" + uid + "/" + mCurrentUser + "/date", currentDate);
+
 
                                     friendsMap.put("Friend_req/" + mCurrentUser + "/" + uid, null);
                                     friendsMap.put("Friend_req/" + uid + "/" + mCurrentUser, null);
@@ -151,6 +153,7 @@ public class RequestsFragment extends Fragment {
                                             }
                                         }
                                     });
+
                                 }
                             });
 
@@ -212,6 +215,8 @@ public class RequestsFragment extends Fragment {
             }
             else
                 mStatus.setText(status);
+
+
         }
 
         public void setName(final String name) {
@@ -239,4 +244,7 @@ public class RequestsFragment extends Fragment {
             }
         }
     }
+
+
+
 }

@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mToolbar = (Toolbar) findViewById(R.id.main_page_tool_bar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("VK Chat");
+        getSupportActionBar().setTitle("Messenger");
         if(mAuth.getCurrentUser() != null) {
             mUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(mAuth.getCurrentUser().getUid());
         }
@@ -65,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             mUserRef.child("online").setValue("true");
         }
-
     }
 
     private void navigateToStartActivity(){
@@ -98,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(settingIntent);
         }
         return true;
-
     }
+
+
 }
