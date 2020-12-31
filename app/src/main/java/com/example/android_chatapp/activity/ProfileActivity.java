@@ -1,10 +1,13 @@
 package com.example.android_chatapp.activity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -308,6 +311,30 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     });
                 }
+            }
+        });
+
+        mDeclineBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Map friendsMap = new HashMap();
+                friendsMap.put("Friend_req/" + mCurrent_user.getUid() + "/" + user_id , null);
+                friendsMap.put("Friend_req/" + user_id + "/" + mCurrent_user.getUid(), null);
+
+                mRootRef.updateChildren(friendsMap, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                        if (error == null) {
+                            Log.d("ErrorREQ","check error");
+                        }
+                        mProfileSendReqBtn.setEnabled(true);
+                        mCurrent_state = "not_friends";
+                        mProfileSendReqBtn.setText("Send Friend Request");
+
+                        mDeclineBtn.setVisibility(View.INVISIBLE);
+                        mDeclineBtn.setEnabled(false);
+                    }
+                });
             }
         });
     }

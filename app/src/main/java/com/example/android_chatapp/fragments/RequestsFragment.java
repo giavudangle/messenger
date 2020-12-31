@@ -59,7 +59,7 @@ public class RequestsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        mRequestView = inflater.inflate(R.layout.fragment_requests,container,false);
+        mRequestView = inflater.inflate(R.layout.fragment_requests, container, false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
         //RecyclerView
@@ -75,10 +75,13 @@ public class RequestsFragment extends Fragment {
         mRootRef = FirebaseDatabase.getInstance().getReference();
 
         friendRequestReference = FirebaseDatabase.getInstance().getReference().child("Friend_req").child(mCurrentUser);
-        friendRequestReference.keepSynced(true);
 
         userDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
+
+
         userDatabase.keepSynced(true);
+        friendRequestReference.keepSynced(true);
+
 
         return mRequestView;
     }
@@ -89,8 +92,8 @@ public class RequestsFragment extends Fragment {
         super.onStart();
         FirebaseRecyclerOptions<Accept> options =
                 new FirebaseRecyclerOptions.Builder<Accept>()
-                        .setQuery(friendRequestReference,Accept.class).build();
-        FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<Accept,AcceptViewHolder>(options){
+                        .setQuery(friendRequestReference, Accept.class).build();
+        FirebaseRecyclerAdapter adapter = new FirebaseRecyclerAdapter<Accept, AcceptViewHolder>(options) {
 
 
             @NonNull
@@ -102,10 +105,10 @@ public class RequestsFragment extends Fragment {
 
             @Override
             protected void onBindViewHolder(@NonNull final AcceptViewHolder holder, int position, @NonNull Accept model) {
-                String requestType = model.getRequest_type();
+                final String uid = getRef(position).getKey().toString();
+                String request_type = model.getRequest_type();
 
-
-                    final String uid = getRef(position).getKey().toString();
+                if (!request_type.equals("sent")) {
                     userDatabase.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -118,24 +121,24 @@ public class RequestsFragment extends Fragment {
                         }
 
                         @Override
-                        public void onCancelled(DatabaseError databaseError) { }
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
 
                     });
+
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             Button mBtnAccept = view.findViewById(R.id.request_fragment_button_accept);
                             Button mBtnDecline = view.findViewById(R.id.request_fragment_button_decline);
 
-
                             mBtnAccept.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     final String currentDate = DateFormat.getDateTimeInstance().format(new Date());
                                     Map friendsMap = new HashMap();
-                                    friendsMap.put("Friends/" + mCurrentUser+ "/" + uid + "/date", currentDate);
+                                    friendsMap.put("Friends/" + mCurrentUser + "/" + uid + "/date", currentDate);
                                     friendsMap.put("Friends/" + uid + "/" + mCurrentUser + "/date", currentDate);
-
 
                                     friendsMap.put("Friend_req/" + mCurrentUser + "/" + uid, null);
                                     friendsMap.put("Friend_req/" + uid + "/" + mCurrentUser, null);
@@ -143,12 +146,11 @@ public class RequestsFragment extends Fragment {
                                     mRootRef.updateChildren(friendsMap, new DatabaseReference.CompletionListener() {
                                         @Override
                                         public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                                            if(error == null){
+                                            if (error == null) {
                                                 Toast.makeText(getContext(), "OK", Toast.LENGTH_SHORT).show();
                                             }
                                         }
                                     });
-
                                 }
                             });
 
@@ -164,7 +166,7 @@ public class RequestsFragment extends Fragment {
                                     mRootRef.updateChildren(friendsMap, new DatabaseReference.CompletionListener() {
                                         @Override
                                         public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                                            if(error == null){
+                                            if (error == null) {
                                                 Toast.makeText(getContext(), "OK", Toast.LENGTH_SHORT).show();
                                             }
                                         }
@@ -173,44 +175,68 @@ public class RequestsFragment extends Fragment {
                             });
                         }
                     });
+                } else {
+                    holder.setName("not");
+                    holder.setStatus("not");
+                    holder.setImage("not");
                 }
-
-
-
+            }
         };
-
         recyclerViewAccept.setAdapter(adapter);
         adapter.startListening();
-
-
     }
 
     public static class AcceptViewHolder extends RecyclerView.ViewHolder {
         View acceptView;
         Button acceptButton;
         Button declineButton;
+
         public AcceptViewHolder(View itemView) {
             super(itemView);
             acceptView = itemView;
             declineButton = acceptView.findViewById(R.id.request_fragment_button_decline);
             acceptButton = acceptView.findViewById(R.id.request_fragment_button_accept);
         }
+
         public void setButtons(String type) {
             declineButton.setVisibility(View.INVISIBLE);
             acceptButton.setText("Cancel");
         }
+
         public void setStatus(final String status) {
             TextView mStatus = acceptView.findViewById(R.id.request_fragment_status);
-            mStatus.setText(status);
+            if(status.equals("not")){
+                mStatus.setVisibility(View.GONE);
+                acceptButton.setVisibility(View.GONE);
+                declineButton.setVisibility(View.GONE);
+            }
+            else
+                mStatus.setText(status);
         }
+
         public void setName(final String name) {
             TextView acceptName = acceptView.findViewById(R.id.request_fragment_name);
-            acceptName.setText(name);
+            if(name.equals("not")){
+                acceptButton.setVisibility(View.GONE);
+                declineButton.setVisibility(View.GONE);
+                acceptName.setVisibility(View.GONE);
+
+            }
+            else
+                acceptName.setText(name);
         }
+
         public void setImage(final String image) {
             CircleImageView mImage = (CircleImageView) acceptView.findViewById(R.id.request_fragment_image);
-            //picasso image downloading and
-            Picasso.get().load(image).placeholder(R.drawable.avatar).into(mImage);
+            if(image.equals("not")){
+                mImage.setVisibility(View.GONE);
+                acceptButton.setVisibility(View.GONE);
+                declineButton.setVisibility(View.GONE);
+            }
+            else {
+                //picasso image downloading and
+                Picasso.get().load(image).placeholder(R.drawable.avatar).into(mImage);
+            }
         }
     }
 }
