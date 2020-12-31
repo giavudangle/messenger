@@ -236,6 +236,14 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        mProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ChatActivity.this,ProfileActivity.class);
+                intent.putExtra("user_id",mChatUser);
+                startActivity(intent);
+            }
+        });
 
         mChatSendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -345,7 +353,7 @@ public class ChatActivity extends AppCompatActivity {
                                 messageUserMap.put(current_user_ref + "/" + push_id, messageMap);
                                 messageUserMap.put(chat_user_ref + "/" + push_id, messageMap);
 
-                                mChatMessageView.setVisibility(View.GONE);
+                                mChatMessageView.setText("");
                                 mRootRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
@@ -557,7 +565,6 @@ public class ChatActivity extends AppCompatActivity {
             messageMap.put("to", mChatUser);
 
 
-
             Map messageUserMap = new HashMap();
             messageUserMap.put(current_user_ref + "/" + push_id, messageMap);
             messageUserMap.put(chat_user_ref + "/" + push_id, messageMap);
@@ -573,11 +580,12 @@ public class ChatActivity extends AppCompatActivity {
             mRootRef.updateChildren(messageUserMap, new DatabaseReference.CompletionListener() {
                 @Override
                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-
+                    if (databaseError != null) {
+                        Log.d("CHAT_LOG", databaseError.getMessage().toString());
+                    }
                 }
             });
         }
-
     }
 
 
@@ -594,14 +602,16 @@ public class ChatActivity extends AppCompatActivity {
                 if (dataSnapshot.hasChild(mCurrentUserId) && dataSnapshot.hasChild(mChatUser)) {
                     for (DataSnapshot snapshot : dataSnapshot.child(mCurrentUserId).child(mChatUser).getChildren()) {
                         Messages mess = snapshot.getValue(Messages.class);
-                        if (mess.getFrom().equals(mCurrentUserId) && mess.getTo().equals(mChatUser)) {
+                        if (mess.getFrom().equals(mCurrentUserId)) {
                             HashMap<String, Object> hashMap = new HashMap<>();
                             hashMap.put("seen", true);
                             snapshot.getRef().updateChildren(hashMap);
                         }
                     }
                 }
+
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
