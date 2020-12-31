@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,6 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android_chatapp.R;
-import com.example.android_chatapp.activity.ChatActivity;
 import com.example.android_chatapp.models.Messages;
 import com.example.android_chatapp.utils.GetTimeAgo;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,8 +28,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.List;
@@ -46,7 +42,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     ProgressDialog mProgressDialog;
     private String mListFile;
 
+    public static  final int MSG_TYPE_LEFT = 0;
+    public static  final int MSG_TYPE_RIGHT = 1;
 
+
+    FirebaseUser fuser;
 
     public MessageAdapter(Context context,List<Messages> mMessageList) {
 
@@ -56,13 +56,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     @Override
     public MessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.message_single_layout ,parent, false);
-
-
-        return new MessageViewHolder(v);
-
+        if (viewType == MSG_TYPE_RIGHT) {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.message_single_layout_right_panel, parent, false);
+            return new MessageAdapter.MessageViewHolder(view);
+        } else {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.message_single_layout_left_panel, parent, false);
+            return new MessageAdapter.MessageViewHolder(view);
+        }
     }
 
     public class MessageViewHolder extends RecyclerView.ViewHolder {
@@ -100,14 +100,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         String from_user = c.getFrom();
         String message_type = c.getType();
 
-
-
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(from_user);
-
-
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         mCurrentUser = currentUser.getUid();
-
 
         if(c.getFrom().equals(mCurrentUser)){
             viewHolder.messageText.setBackgroundResource(R.drawable.message_received_background_layout);
@@ -127,15 +122,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         mUserDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                String name = dataSnapshot.child("name").getValue().toString();
-                String image = dataSnapshot.child("thumb_image").getValue().toString();
-
-                viewHolder.displayName.setText(name);
-
-                Picasso.get().load(image)
-                       .into(viewHolder.profileImage);
-
+                if(getItemViewType(i) == MSG_TYPE_LEFT){
+                    String name = dataSnapshot.child("name").getValue().toString();
+                    String image = dataSnapshot.child("thumb_image").getValue().toString();
+                    viewHolder.displayName.setText(name);
+                    Picasso.get().load(image)
+                            .into(viewHolder.profileImage);
+                }
             }
 
             @Override
@@ -153,17 +146,23 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         }
 
         if(message_type.equals("text")) {
+
             viewHolder.messageText.setText(c.getMessage());
             viewHolder.messageImage.setVisibility(View.GONE);
             viewHolder.messFile.setVisibility(View.GONE);
 
-            String timeAgo = GetTimeAgo.getTimeAgo(c.getTime(),mContext);
+            if(getItemViewType(i) == MSG_TYPE_RIGHT){
+                viewHolder.messageTime.setVisibility(View.GONE);
+            } else {
+                String timeAgo = GetTimeAgo.getTimeAgo(c.getTime(),mContext);
+                viewHolder.messageTime.setText(timeAgo);
+            }
 
-            viewHolder.messageTime.setText(timeAgo);
+
 
         }
         else if(message_type.equals("word")) {
-            viewHolder.messageText.setText("Word file => ");
+            viewHolder.messageText.setVisibility(View.GONE);
             viewHolder.messageImage.setVisibility(View.GONE);
             viewHolder.messFile.setVisibility(View.VISIBLE);
             mListFile= (c.getMessage());
@@ -172,13 +171,19 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             Picasso.get().load(c.getMessage()).into(viewHolder.messageImage);
             viewHolder.messageText.setVisibility(View.GONE);
             viewHolder.messFile.setVisibility(View.GONE);
-            String timeAgo = GetTimeAgo.getTimeAgo(c.getTime(),mContext);
-            viewHolder.messageTime.setText(timeAgo);
+            if(getItemViewType(i) == MSG_TYPE_RIGHT){
+                viewHolder.messageTime.setVisibility(View.GONE);
+            } else {
+                String timeAgo = GetTimeAgo.getTimeAgo(c.getTime(),mContext);
+                viewHolder.messageTime.setText(timeAgo);
+            }
+
         }
 
         if(i == mMessageList.size()-1){
             if (c.getFrom().equals(mCurrentUser) ){
                 if(c.isSeen()){
+                    viewHolder.seen.setVisibility(View.VISIBLE);
                     viewHolder.seen.setText("Seen");
                 }
                 else
@@ -220,5 +225,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         return mMessageList.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        fuser = FirebaseAuth.getInstance().getCurrentUser();
+        if (mMessageList.get(position).getFrom().equals(fuser.getUid())){
+            return MSG_TYPE_RIGHT;
+        } else {
+            return MSG_TYPE_LEFT;
+        }
 
+    }
 }
