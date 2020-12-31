@@ -83,17 +83,5 @@
         android:layout_alignLeft="@+id/message_text_layout"
         android:layout_toRightOf="@+id/message_profile_layout" />
 
-    <ImageView
-        android:id="@+id/imgWord"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_below="@+id/message_text_layout"
-        android:layout_alignEnd="@+id/message_text_layout"
-        android:layout_alignRight="@+id/message_text_layout"
-        android:layout_marginTop="-44dp"
-        android:layout_marginEnd="-48dp"
-        android:layout_marginRight="-48dp"
-        app:srcCompat="@drawable/icons8_file" />
-
 
 </RelativeLayout>

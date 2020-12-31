@@ -13,11 +13,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.android_chatapp.R;
+import com.example.android_chatapp.activity.ChatActivity;
 import com.example.android_chatapp.models.Messages;
 import com.example.android_chatapp.utils.GetTimeAgo;
 import com.google.firebase.auth.FirebaseAuth;
@@ -74,7 +76,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         public TextView seen;
 
         public ImageView messageImage;
-        public ImageView messFile;
 
 
 
@@ -85,7 +86,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             profileImage = (CircleImageView) view.findViewById(R.id.message_profile_layout);
             displayName = (TextView) view.findViewById(R.id.name_text_layout);
             messageImage = (ImageView) view.findViewById(R.id.message_image_layout);
-            messFile = (ImageView) view.findViewById(R.id.imgWord);
             seen=(TextView) view.findViewById(R.id.seen);
 
         }
@@ -142,19 +142,18 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             viewHolder.displayName.setVisibility(View.GONE);
             viewHolder.messageText.setVisibility(View.GONE);
             viewHolder.messageTime.setVisibility(View.GONE);
-            viewHolder.messFile.setVisibility(View.GONE);
         }
 
         if(message_type.equals("text")) {
 
             viewHolder.messageText.setText(c.getMessage());
             viewHolder.messageImage.setVisibility(View.GONE);
-            viewHolder.messFile.setVisibility(View.GONE);
 
             if(getItemViewType(i) == MSG_TYPE_RIGHT){
                 viewHolder.messageTime.setVisibility(View.GONE);
             } else {
                 String timeAgo = GetTimeAgo.getTimeAgo(c.getTime(),mContext);
+
                 viewHolder.messageTime.setText(timeAgo);
             }
 
@@ -162,19 +161,18 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         }
         else if(message_type.equals("word")) {
-            viewHolder.messageText.setVisibility(View.GONE);
+            viewHolder.messageText.setText("\uD83D\uDCCE");
             viewHolder.messageImage.setVisibility(View.GONE);
-            viewHolder.messFile.setVisibility(View.VISIBLE);
-            mListFile= (c.getMessage());
         }
         else {
             Picasso.get().load(c.getMessage()).into(viewHolder.messageImage);
             viewHolder.messageText.setVisibility(View.GONE);
-            viewHolder.messFile.setVisibility(View.GONE);
             if(getItemViewType(i) == MSG_TYPE_RIGHT){
                 viewHolder.messageTime.setVisibility(View.GONE);
+
             } else {
                 String timeAgo = GetTimeAgo.getTimeAgo(c.getTime(),mContext);
+
                 viewHolder.messageTime.setText(timeAgo);
             }
 
@@ -192,29 +190,30 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         }
 
 
-        viewHolder.itemView.findViewById(R.id.imgWord).setOnLongClickListener(new View.OnLongClickListener() {
+
+
+        viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                String DIR_NAME = "Downloads";
-                String fileName ="Word";
-                String downloadUrlOfImage = mListFile;
-                File direct =
-                        new File(Environment
-                                .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                                .getAbsolutePath() + "/" + DIR_NAME + "/");
 
-                DownloadManager dm = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
-                Uri downloadUri = Uri.parse(downloadUrlOfImage);
-                DownloadManager.Request request = new DownloadManager.Request(downloadUri);
-                request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                        .setAllowedOverRoaming(false)
-                        .setTitle(fileName)
-                        .setMimeType("doc")
-                        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                        .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES,
-                                File.separator + DIR_NAME + File.separator + fileName);
+               if(viewHolder.messageText.getText().toString().equals("\uD83D\uDCCE")){
+                   String DIR_NAME = "Downloads";
+                   String fileName ="Word";
+                   String downloadUrlOfImage = mMessageList.get(i).getMessage();
 
-                dm.enqueue(request);
+                   DownloadManager dm = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
+                   Uri downloadUri = Uri.parse(downloadUrlOfImage);
+                   DownloadManager.Request request = new DownloadManager.Request(downloadUri);
+                   request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                           .setAllowedOverRoaming(false)
+                           .setTitle(fileName)
+                           .setMimeType("doc")
+                           .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                           .setDestinationInExternalPublicDir(Environment.DIRECTORY_PICTURES,
+                                   File.separator + DIR_NAME + File.separator + fileName);
+                   dm.enqueue(request);
+                   Toast.makeText(mContext,"Download file successfully",Toast.LENGTH_SHORT).show();
+               }
                 return false;
             }
         });
