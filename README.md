@@ -18,7 +18,8 @@
 - Profile 
 - Friend Status
 - Smooth scroll load more messages
-- Authentication
+- Authentication Firebase
+- Check online / last seen ...
 
 
 ## How to run:
