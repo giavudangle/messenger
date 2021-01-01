@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.example.android_chatapp.R;
 import com.example.android_chatapp.activity.ChatActivity;
 import com.example.android_chatapp.models.Chats;
+import com.example.android_chatapp.models.Messages;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -104,7 +105,30 @@ public class ChatsFragment extends Fragment {
 
                         holder.setName(name);
                         holder.setImage(image);
-                        holder.setLastestMessage("Click to see last message by " + name);
+
+                        FirebaseDatabase.getInstance().getReference().child("messages").child(mCurrentUser).child(uid).orderByChild("time").limitToLast(1)
+                                .addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                            Messages last = snapshot.getValue(Messages.class);
+                                            if(last.getMessage().contains("https")){
+                                                holder.setLastestMessage("\uD83D\uDCF8");
+
+                                            }else {
+                                                holder.setLastestMessage(last.getMessage());
+                                            }
+
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
 
 
 
@@ -119,15 +143,31 @@ public class ChatsFragment extends Fragment {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent chatIntent = new Intent(getContext(), ChatActivity.class);
-                        ActivityOptions options = ActivityOptions.makeCustomAnimation(getContext(), android.R.anim.fade_in, android.R.anim.fade_out);
-                        chatIntent.putExtra("user_id", uid);
-                        chatIntent.putExtra("current_id", mCurrentUser);
-                        chatIntent.putExtra("user_name", name);
-                        chatIntent.putExtra("user_image", image);
+
+                        FirebaseDatabase.getInstance().getReference().child("Users").child(uid).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                Intent chatIntent = new Intent(getContext(), ChatActivity.class);
+                                ActivityOptions options = ActivityOptions.makeCustomAnimation(getContext(), android.R.anim.fade_in, android.R.anim.fade_out);
+
+                                String mName = snapshot.child("name").getValue().toString();
+                                String mImage = snapshot.child("thumb_image").getValue().toString();
+
+                                chatIntent.putExtra("user_id", uid);
+                                chatIntent.putExtra("current_id", mCurrentUser);
+                                chatIntent.putExtra("user_name", mName);
+                                chatIntent.putExtra("user_image", mImage);
 
 
-                        startActivity(chatIntent,options.toBundle());
+                                startActivity(chatIntent,options.toBundle());
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+
                     }
                 });
             }

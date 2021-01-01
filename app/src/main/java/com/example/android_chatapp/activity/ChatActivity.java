@@ -166,8 +166,7 @@ public class ChatActivity extends AppCompatActivity {
 
 
 
-        mTitleView.setText(userName);
-        Picasso.get().load(userImage).into(mProfileImage);
+
 
         mRootRef.child("Users").child(mChatUser).addValueEventListener(new ValueEventListener() {
             @Override
@@ -176,11 +175,17 @@ public class ChatActivity extends AppCompatActivity {
                 String image = dataSnapshot.child("image").getValue().toString();
                 if (online.equals("true")) {
                     mLastSeenView.setText("Online");
+                    Picasso.get().load(image).placeholder(R.drawable.avatar).into(mProfileImage);
+                    mTitleView.setText(userName);
+                    mTitleView.setText(userName);
                 } else {
                     GetTimeAgo getTimeAgo = new GetTimeAgo();
                     long lastTime = Long.parseLong(online);
                     String lastSeenTime = getTimeAgo.getTimeAgo(lastTime, getApplicationContext());
                     mLastSeenView.setText(lastSeenTime);
+                    Picasso.get().load(image).placeholder(R.drawable.avatar).into(mProfileImage);
+                    mTitleView.setText(userName);
+                    mTitleView.setText(userName);
                 }
                 loadMessages();
             }
