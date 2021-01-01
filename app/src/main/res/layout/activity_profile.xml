@@ -45,13 +45,14 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/profile_send_req_btn"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
         android:text="Total Friends"
         android:textColor="@color/white"
         android:textSize="16sp" />
 
     <Button
         android:id="@+id/profile_send_req_btn"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_above="@+id/profile_decline_btn"
         android:layout_centerHorizontal="true"
@@ -63,7 +64,7 @@
 
     <Button
         android:id="@+id/profile_decline_btn"
-        android:layout_width="wrap_content"
+        android:layout_width="200dp"
         android:padding="10dp"
 
         android:layout_height="wrap_content"

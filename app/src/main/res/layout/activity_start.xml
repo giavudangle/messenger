@@ -1,45 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:gravity="center_horizontal">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:src="@drawable/ic_vector_chatapp"
+        android:scaleType="fitCenter"
+        android:layout_gravity="top"
+        android:layout_marginTop="30dp"/>
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Welcome to Chat App"
-        android:textSize="30dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.428" />
-
-    <Button
-        android:id="@+id/btn_start_register"
-        android:layout_width="213dp"
-        android:layout_height="51dp"
-        android:layout_marginBottom="208dp"
-        android:background="@color/colorPrimary"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
-        android:text="Need an account ?"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:text="VK Messenger"
+        android:textSize="40sp"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        />
 
     <Button
         android:id="@+id/btn_start_login"
-        android:layout_width="213dp"
-        android:layout_height="56dp"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:background="@color/colorPrimary"
-        android:text="ALREADY HAVE ACCOUNT"
-        app:layout_constraintBottom_toTopOf="@+id/btn_start_register"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.855" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:textAllCaps="false"
+
+        android:layout_marginTop="50dp"
+        android:text="Login" />
+    <Button
+        android:id="@+id/btn_start_register"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:textSize="25sp"
+        android:text="Register"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        android:layout_marginTop="20dp"/>
+
+
+</LinearLayout>
