@@ -1,11 +1,39 @@
 # VKMessenger #
 
-Add yours google-services.json
-<br><b> Change Authorization:key with your key from firebase project</b>
+# A chat messenger app for Android using Firebase
+
+## Technical specification:
+- Language - [Java](https://www.java.com/en/) 
+- Support library - [androidx](https://developer.android.com/jetpack/androidx)
+
+## Project contains the following features implemented:
+- Edit status and avatar
+- Send messages
+- File attachments ( Image & Word )
+- Delivered/Seen messages statuses
+- Friend Request
+- Profile 
+- Friend Status
+- Smooth scroll load more messages
+- Authentication
 
 
+## How to run:
 
-Check out the design...
+1. Create your Firebase Project
+
+2. Put Firebase credentials to project (replace my google-services.json )
+- Connect to firebase console authentication and database from your IDE 
+- in firebase Storage Rules, change value of "allow read, write:" from "if request.auth != null" to "if true;" 
+- When you change database settings, you likely will need to uninstall and reinstall apps to avoid app crashes due to app caches.
+
+3. IMPORTANT Change the Package Name
+
+
+## Have an issue?
+Got troubles with integration? Just create an issue at [Issues page](https://github.com/giavudangle/android-chatapp-firebase/issues)
+
+Check out all the design...
 <div>
 <img src="https://res.cloudinary.com/chemthan2202/image/upload/v1609489978/small_Screen_Shot_2021_01_01_at_2_21_39_PM_58f4a4901c.png?162981" height="400"/>   
 <img src="https://res.cloudinary.com/chemthan2202/image/upload/v1609489978/small_Screen_Shot_2021_01_01_at_2_21_54_PM_a255f53c13.png?162980" width="200" height="400"/>   
