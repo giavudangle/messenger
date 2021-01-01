@@ -6,7 +6,7 @@ Add yours google-services.json
 
 
 Check out the design...
-
+<div>
 <img src="https://res.cloudinary.com/chemthan2202/image/upload/v1609489978/small_Screen_Shot_2021_01_01_at_2_21_39_PM_58f4a4901c.png?162981" height="400"/>   
 <img src="https://res.cloudinary.com/chemthan2202/image/upload/v1609489978/small_Screen_Shot_2021_01_01_at_2_21_54_PM_a255f53c13.png?162980" width="200" height="400"/>   
 <img src="https://res.cloudinary.com/chemthan2202/image/upload/v1609489977/small_Screen_Shot_2021_01_01_at_2_22_05_PM_ecd34f3d92.png?162982" width="200" height="400"/>    
@@ -24,3 +24,4 @@ Check out the design...
 <img src="https://res.cloudinary.com/chemthan2202/image/upload/v1609489973/small_Screen_Shot_2021_01_01_at_3_26_10_PM_38abc70ae5.png?167823" width="200" height="400"/>  
 <img src="https://res.cloudinary.com/chemthan2202/image/upload/v1609489973/small_Screen_Shot_2021_01_01_at_3_26_10_PM_38abc70ae5.png?167823" width="200" height="400"/>  
 <img src="https://res.cloudinary.com/chemthan2202/image/upload/v1609489972/small_Screen_Shot_2021_01_01_at_3_26_56_PM_7f0bc6a51b.png?167826" width="200" height="400"/>  
+  </div>
