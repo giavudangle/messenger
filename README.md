@@ -1,5 +1,9 @@
 # VKMessenger #
-
+<div>
+<img src="https://res.cloudinary.com/chemthan2202/image/upload/v1609489978/small_Screen_Shot_2021_01_01_at_2_21_39_PM_58f4a4901c.png?162981" height="400"/>   
+<img src="https://res.cloudinary.com/chemthan2202/image/upload/v1609489978/small_Screen_Shot_2021_01_01_at_2_21_54_PM_a255f53c13.png?162980" width="200" height="400"/>   
+<img src="https://res.cloudinary.com/chemthan2202/image/upload/v1609489977/small_Screen_Shot_2021_01_01_at_2_22_05_PM_ecd34f3d92.png?162982" width="200" height="400"/>    
+</div>
 # A chat messenger app for Android using Firebase
 
 ## Technical specification:
@@ -24,7 +28,7 @@
 
 2. Put Firebase credentials to project (replace my google-services.json )
 - Connect to firebase console authentication and database from your IDE 
-- in firebase Storage Rules, change value of "allow read, write:" from "if request.auth != null" to "if true;" 
+- In firebase Storage Rules, change value of "allow read, write:" from "if request.auth != null" to "if true;" 
 - When you change database settings, you likely will need to uninstall and reinstall apps to avoid app crashes due to app caches.
 
 3. IMPORTANT Change the Package Name
