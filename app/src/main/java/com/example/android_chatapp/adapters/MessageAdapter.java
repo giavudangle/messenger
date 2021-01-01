@@ -214,7 +214,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                public void onClick(DialogInterface dialog, int id) {
                                    String DIR_NAME = "Downloads";
-                                   String fileName ="Word";
+                                   String fileName ="Word.doc";
                                    String downloadUrlOfImage = mMessageList.get(i).getMessage();
 
                                    DownloadManager dm = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
