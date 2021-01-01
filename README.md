@@ -21,7 +21,6 @@ Check out the design...
 <img src="https://res.cloudinary.com/chemthan2202/image/upload/v1609489972/small_Screen_Shot_2021_01_01_at_2_26_37_PM_b0b69cbd3c.png?167825.00000000003" width="200" height="400"/>  
 <img src="https://res.cloudinary.com/chemthan2202/image/upload/v1609489973/small_Screen_Shot_2021_01_01_at_3_25_50_PM_6c6e35caa8.png?167825.00000000003" width="200" height="400"/>  
 <img src="https://res.cloudinary.com/chemthan2202/image/upload/v1609489973/small_Screen_Shot_2021_01_01_at_3_26_10_PM_38abc70ae5.png?167823" width="200" height="400"/>  
-<img src="https://res.cloudinary.com/chemthan2202/image/upload/v1609489973/small_Screen_Shot_2021_01_01_at_3_26_10_PM_38abc70ae5.png?167823" width="200" height="400"/>  
-<img src="https://res.cloudinary.com/chemthan2202/image/upload/v1609489973/small_Screen_Shot_2021_01_01_at_3_26_10_PM_38abc70ae5.png?167823" width="200" height="400"/>  
+<img src="https://res.cloudinary.com/chemthan2202/image/upload/v1609489973/small_Screen_Shot_2021_01_01_at_3_29_02_PM_aa45aed91a.png?167824" width="200" height="400"/>  
 <img src="https://res.cloudinary.com/chemthan2202/image/upload/v1609489972/small_Screen_Shot_2021_01_01_at_3_26_56_PM_7f0bc6a51b.png?167826" width="200" height="400"/>  
   </div>
