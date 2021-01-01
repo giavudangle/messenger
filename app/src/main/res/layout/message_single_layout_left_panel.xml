@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="10dp"
-    android:layout_marginBottom="-20dp"
+    android:layout_marginBottom="20dp"
     android:weightSum="10">
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/message_profile_layout"

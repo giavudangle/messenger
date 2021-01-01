@@ -3,12 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.RequestsFragment">
+    tools:context=".fragments.RequestsFragment"
+    android:background="@color/white">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/request_fragment_recycler_view_accept"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="46dp"
          />
 
 </FrameLayout>
